@@ -7,5 +7,10 @@ console.log("router loaded")
 
 router.get('/',homeController.home)
 
+router.use('/users', require('./users'));
+
+
+//for ant further routes access from here
+// routes.use('/routerName' , require('./routerfile));
 
 module.exports = router;
