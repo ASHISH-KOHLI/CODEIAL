@@ -7,7 +7,7 @@ router.get('/profile', userController.profile);
 
 
 router.get('/sign_up',userController.signUp);
-router.get('/sign_ip',userController.signIn);
+router.get('/sign_in',userController.signIn);
 
 
 
