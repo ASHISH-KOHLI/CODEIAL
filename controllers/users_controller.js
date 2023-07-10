@@ -19,3 +19,9 @@ module.exports.signIn = function(req, res){
         title: "codeial | Sign In"
     })
 }
+
+// get the sign up data
+
+module.exports.create =function(req, res){
+    // todo later
+}
