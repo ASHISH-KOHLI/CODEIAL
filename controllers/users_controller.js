@@ -25,3 +25,7 @@ module.exports.signIn = function(req, res){
 module.exports.create =function(req, res){
     // todo later
 }
+
+module.exports.createSession =function(req, res){
+    // todo later
+}
