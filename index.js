@@ -9,8 +9,6 @@ const session = require('express-session');
 const passport = require('passport');
 const passportLocal = require('./config/passport-local-strategy');
 
-
-
 app.use(express.urlencoded());
 
 app.use(cookieParser());
