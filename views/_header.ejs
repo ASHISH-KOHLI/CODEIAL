@@ -2,7 +2,9 @@
     Page Header
     <ul>
         <% if (locals.user){ %>
-<li><%= user.name %></li>
+<li>
+    <a href="/users/profile"><%= user.name %></a>
+    </li>
 <li>
     <a href="/users/sign-out">sign-out</a>
 </li>
