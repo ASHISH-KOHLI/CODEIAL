@@ -1,16 +1,10 @@
 const express = require('express');
 
-const router = express.Router();
-const homeController = require('../controllers/home_controller');
+const router =express.Router();
+const homeController =require('../controllers/home_controller')
+console.log('routes loaded');
 
-console.log('router loaded');
-
-router.get('/',homeController.home);
-
-router.use('/users', require('./users'));
+router.get('/',homeController.home)
 
 
-//for ant further routes access from here
-// routes.use('/routerName' , require('./routerfile));
-
-module.exports = router;
+module.exports=router;
