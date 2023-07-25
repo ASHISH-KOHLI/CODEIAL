@@ -3,31 +3,21 @@ const User = require('../models/user');
 // module.exports.actionName = function(req,res){}
 
 module.exports.profile = function (req, res) {
-    const userIdCookie = req.cookies.user_id;
-    if (userIdCookie) {
-        // Assuming that User.findById returns a promise or can be promisified
-        User.findById(userIdCookie)
-            .then((user) => {
-                if (user) {
+    
                     return res.render('user_profile', {
                         title: "User Profile",
-                        user: user
                     });
-                }
-                return res.redirect('/users/SignIn');
-            })
-            .catch((err) => {
-                console.error('Error finding user by ID:', err);
-                return res.redirect('/users/SignIn');
-            });
-    } else {
-        return res.redirect('/users/SignIn');
-    }
+              
 };
 
 
 // render the sign up page
 module.exports.SignUp = function (req, res) {
+  if(req.isAuthenticated()){
+   return  res.redirect('/users/profile');
+  }
+
+
   return res.render("user_sign_up", {
     title: "Codeal|sign Up",
   });
@@ -35,6 +25,10 @@ module.exports.SignUp = function (req, res) {
 
 // render the sign ip page
 module.exports.SignIn = function (req, res) {
+    if(req.isAuthenticated()){
+       return  res.redirect('/users/profile');
+      }
+
   return res.render("user_sign_in", {
     title: "Codeal|sign In",
   });
@@ -70,34 +64,45 @@ module.exports.create = function (req, res) {
             return res.status(500).send('Error creating user. Please try again later.');
         });
 };
-//get the sign in and create the session for the user
-module.exports.createSession = function (req, res) {
 
-    const findUser = (query) => {
-        return User.findOne(query).exec();
-    }
 
-    findUser({email: req.body.email})
-        .then((user) => {
 
-            if(user){
 
-                    if(user.password != req.body.password){
-                        res.redirect('back');
-                }
+// //get the sign in and create the session for the user
+// module.exports.createSession = function (req, res) {
+
+//     const findUser = (query) => {
+//         return User.findOne(query).exec();
+//     }
+
+//     findUser({email: req.body.email})
+//         .then((user) => {
+
+//             if(user){
+
+//                     if(user.password != req.body.password){
+//                         res.redirect('back');
+//                 }
                 
-                //handle session creation
-                res.cookie('user_id', user.id);
-                res.redirect('/users/profile');;
+//                 //handle session creation
+//                 res.cookie('user_id', user.id);
+//                 res.redirect('/users/profile');;
             
-            }else{
-                res.redirect('back');
-            }
+//             }else{
+//                 res.redirect('back');
+//             }
 
-        }) 
-        .catch(err => {
-             console.log('error in finding user in signing in'); return 
+//         }) 
+//         .catch(err => {
+//              console.log('error in finding user in signing in'); return 
 
-        })
+//         })
 
+// }}
+
+
+
+ //get the sign in and create the session for the user
+module.exports.createSession = function (req, res) {
+    return res.redirect('/');
 }
