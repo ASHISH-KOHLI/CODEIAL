@@ -21,6 +21,20 @@ module.exports.profile = async function (req, res) {
     }
 };
 
+module.exports.update = async function (req, res) {
+    try {
+        if (req.user.id == req.params.id) {
+            await User.findByIdAndUpdate(req.params.id, req.body).exec();
+            return res.redirect('back');
+        } else {
+            return res.status(401).send('Unauthorized');
+        }
+    } catch (err) {
+        console.log('Error updating user:', err);
+        return res.redirect('back');
+    }
+};
+
 
 // render the sign up page
 module.exports.SignUp = function (req, res) {
