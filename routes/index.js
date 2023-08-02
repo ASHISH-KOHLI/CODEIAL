@@ -9,4 +9,6 @@ router.use('/users',require('./users'))
 // for any other routes acces from here
 // router.use('/routername' , require('./routerfile'));
 router.use('/posts',require('./posts'));
+
+router.use('/comments',require('./comments'));
 module.exports=router;
