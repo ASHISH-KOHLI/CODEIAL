@@ -2,19 +2,30 @@ const User = require('../models/user');
 
 // module.exports.actionName = function(req,res){}
 
-module.exports.profile = function (req, res) {
-    
-                    return res.render('user_profile', {
-                        title: "User Profile",
-                    });
-              
+
+module.exports.profile = async function (req, res) {
+    try {
+        const user = await User.findById(req.params.id).exec();
+
+        if (!user) {
+            return res.redirect('/');
+        }
+
+        return res.render('user_profile', {
+            title: 'Codeial | Profile',
+            profile_user: user
+        });
+    } catch (err) {
+        console.log('Error fetching user profile:', err);
+        return res.redirect('/');
+    }
 };
 
 
 // render the sign up page
 module.exports.SignUp = function (req, res) {
   if(req.isAuthenticated()){
-   return  res.redirect('/users/profile');
+   return  res.redirect('/users/profile'+ req.user.id);
   }
 
 
@@ -26,7 +37,7 @@ module.exports.SignUp = function (req, res) {
 // render the sign ip page
 module.exports.SignIn = function (req, res) {
     if(req.isAuthenticated()){
-       return  res.redirect('/users/profile');
+       return  res.redirect('/users/profile' + req.user.id);
       }
 
   return res.render("user_sign_in", {
@@ -104,7 +115,7 @@ module.exports.create = function (req, res) {
 
  //get the sign in and create the session for the user
 module.exports.createSession = function (req, res) {
-    return res.redirect('/');
+    res.redirect('/users/profile/' + req.user.id);
 }
 
 // get the sign out functionality
