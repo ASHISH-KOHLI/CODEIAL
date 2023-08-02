@@ -35,3 +35,27 @@ module.exports.create = function (req, res) {
         });
 };
 
+
+module.exports.destroy = async function (req, res) {
+    try {
+        const comment = await Comment.findById(req.params.id).exec();
+
+        if (!comment) {
+            return res.redirect('back');
+        }
+
+        if (comment.user.toString() !== req.user.id) {
+            return res.redirect('back');
+        }
+
+        let postId = comment.post;
+        await comment.deleteOne();
+
+        await Post.findByIdAndUpdate(postId, { $pull: { comments: req.params.id } }).exec();
+
+        return res.redirect('back');
+    } catch (err) {
+        console.log('Error deleting comment:', err);
+        return res.redirect('back');
+    }
+};
