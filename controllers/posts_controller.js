@@ -46,28 +46,47 @@ module.exports.create = async function (req, res) {
 // }
 
 
-module.exports.destroy = function (req, res) {
-    Post.findById(req.params.id)
-        .exec()
-        .then(post => {
-            if (!post) {
-                return res.redirect('back');
-            }
+// module.exports.destroy = function (req, res) {
+//     Post.findById(req.params.id)
+//         .exec()
+//         .then(post => {
+//             if (!post) {
+//                 return res.redirect('back');
+//             }
 
-            if (post.user.toString() !== req.user.id) {
-                return res.redirect('back');
-            }
+//             if (post.user.toString() !== req.user.id) {
+//                 return res.redirect('back');
+//             }
 
-            return Promise.all([
-                post.deleteOne(), // or post.deleteMany() for multiple posts
-                Comment.deleteMany({ post: req.params.id }).exec()
-            ]);
-        })
-        .then(() => {
+//             return Promise.all([
+//                 post.deleteOne(), // or post.deleteMany() for multiple posts
+//                 Comment.deleteMany({ post: req.params.id }).exec()
+//             ]);
+//         })
+//         .then(() => {
+//             return res.redirect('back');
+//         })
+//         .catch(err => {
+//             console.log('Error deleting post:', err);
+//             return res.redirect('back');
+//         });
+// };
+module.exports.destroy = async function (req, res) {
+    try {
+        const post = await Post.findById(req.params.id).exec();
+
+        if (!post || post.user.toString() !== req.user.id) {
             return res.redirect('back');
-        })
-        .catch(err => {
-            console.log('Error deleting post:', err);
-            return res.redirect('back');
-        });
+        }
+
+        await Promise.all([
+            post.deleteOne(), // or post.deleteMany() for multiple posts
+            Comment.deleteMany({ post: req.params.id }).exec()
+        ]);
+
+        return res.redirect('back');
+    } catch (err) {
+        console.log('Error deleting post:', err);
+        return res.redirect('back');
+    }
 };
