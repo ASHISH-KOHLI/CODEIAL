@@ -1,20 +1,22 @@
-<header>
-   <div id="left"><a href="/">Codieal</a></div>
-    <div id="right">
-      <ul><% if (locals.user) {%>
-        <li><a href="/users/profile">
-           <%= user.name %>
-        </a></li>
-       <li>
-           <a href="/users/SignOut">Sign Out</a>
-       </li>
-           <% }else{ %>
-         <li>
-           <a href="/users/SignIn">Sign In</a>
-         </li>
-           <a href="/users/SignUp">Sign Up</a>
-           <% } %>
-    </div>
-    
-    </ul>
+<header id="layout-header">
+  <nav>
+        <div class="mini-logo">
+             <p>
+               <a href='/'> codeial </a>
+               </p>
+        </div>
+
+      <div class="auth-links">
+          <ul><% if (locals.user) {%>
+            <li><a href="/users/profile"><%= user.name %></a>
+            </li>
+            <li> <a href="/users/SignOut">Sign Out</a>
+            </li>
+            <% }else{ %>
+            <li><a href="/users/SignIn">Sign In</a>
+            </li><a href="/users/SignUp">Sign Up</a>
+           <% } %>   
+          </ul>
+      </div>
+    </nav>
 </header>
