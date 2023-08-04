@@ -21,15 +21,6 @@ module.exports.create = async function (req, res) {
             content: req.body.content,
             user: req.user._id
         });
-
-        if(req.xhr){
-            return res.status(200).json({
-                data:{
-                    post:post
-                },
-                message:"post created"
-            });
-        }
         req.flash('success','post published')
         return res.redirect('back');
     } catch (err) {
@@ -81,28 +72,65 @@ module.exports.create = async function (req, res) {
 //             return res.redirect('back');
 //         });
 // };
-module.exports.destroy = async function(req, res)
-{
-    try
-    {
-        let comment = await Comment.findById(req.params.id);
-        let post = await Post.findById(comment.post);
-        if(comment.user == req.user.id ||  post.user == req.user.id)
-        {
-            let postId = comment.post;
-            comment.remove();
-            let post = Post.findByIdAndUpdate(postId, { $pull: {comments: req.params.id}});
-            req.flash('success', 'Comment Removed');
-            return res.redirect('back');
-        }
-        else
-        {
-            return res.redirect('back');
-        }
+// module.exports.destroy = async function(req, res)
+// {
+//     try
+//     {
+//         let comment = await Comment.findById(req.params.id);
+//         let post = await Post.findById(comment.post);
+//         if(comment.user == req.user.id ||  post.user == req.user.id)
+//         {
+//             let postId = comment.post;
+//             comment.remove();
+//             let post = Post.findByIdAndUpdate(postId, { $pull: {comments: req.params.id}});
+//             req.flash('success', 'Comment Removed');
+//             return res.redirect('back');
+//         }
+//         else
+//         {
+//             return res.redirect('back');
+//         }
+//     }
+//     catch(err)
+//     {
+//         req.flash('error', err);
+//         return res.redirect('back');
+//     }
+// }
+
+
+module.exports.destroy = async function(req, res) {
+  try {
+    let post = await Post.findById(req.params.id);
+
+    if (!post) {
+      req.flash('error', 'Post not found.');
+      return res.redirect('back');
     }
-    catch(err)
-    {
-        req.flash('error', err);
-        return res.redirect('back');
+
+    if (post.user.toString() !== req.user.id) {
+      req.flash('error', 'You cannot delete this post!');
+      return res.redirect('back');
     }
-}
+
+    await Comment.deleteMany({ post: req.params.id });
+
+    await Post.deleteOne({ _id: req.params.id });
+
+    if (req.xhr) {
+      return res.status(200).json({
+        data: {
+          post_id: req.params.id
+        },
+        message: 'Post deleted'
+      });
+    }
+
+    req.flash('success', 'Post and associated comments deleted!');
+    return res.redirect('back');
+  } catch (err) {
+    console.error(err);
+    req.flash('error', 'An error occurred while deleting the post.');
+    return res.redirect('back');
+  }
+};
