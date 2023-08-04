@@ -130,7 +130,7 @@ module.exports.create = function (req, res) {
  //get the sign in and create the session for the user
 module.exports.createSession = function (req, res) {
     req.flash('success','Logged in sucessfully');
-    res.redirect('/users/profile/' + req.user.id);
+    res.redirect('/');
 }
 
 // get the sign out functionality

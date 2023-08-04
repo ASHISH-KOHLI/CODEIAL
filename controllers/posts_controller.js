@@ -21,10 +21,11 @@ module.exports.create = async function (req, res) {
             content: req.body.content,
             user: req.user._id
         });
+        req.flash('success','post published')
         return res.redirect('back');
     } catch (err) {
-        console.log('Error in creating a post:', err);
-        return res.status(500).send('Internal Server Error');
+        req.flash('error',err)
+        return res.redirect('back');
     }
 };
 
@@ -71,22 +72,28 @@ module.exports.create = async function (req, res) {
 //             return res.redirect('back');
 //         });
 // };
-module.exports.destroy = async function (req, res) {
-    try {
-        const post = await Post.findById(req.params.id).exec();
-
-        if (!post || post.user.toString() !== req.user.id) {
+module.exports.destroy = async function(req, res)
+{
+    try
+    {
+        let comment = await Comment.findById(req.params.id);
+        let post = await Post.findById(comment.post);
+        if(comment.user == req.user.id ||  post.user == req.user.id)
+        {
+            let postId = comment.post;
+            comment.remove();
+            let post = Post.findByIdAndUpdate(postId, { $pull: {comments: req.params.id}});
+            req.flash('success', 'Comment Removed');
             return res.redirect('back');
         }
-
-        await Promise.all([
-            post.deleteOne(), // or post.deleteMany() for multiple posts
-            Comment.deleteMany({ post: req.params.id }).exec()
-        ]);
-
-        return res.redirect('back');
-    } catch (err) {
-        console.log('Error deleting post:', err);
+        else
+        {
+            return res.redirect('back');
+        }
+    }
+    catch(err)
+    {
+        req.flash('error', err);
         return res.redirect('back');
     }
-};
+}
