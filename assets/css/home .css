@@ -1,6 +1,19 @@
 #home-container{
     display: flex;
 }
+#home-container #user-nav {
+    width : 20%;
+    padding:10px;
+    border-right: 1px solid lightgrey;
+}
+
 #feed-posts{
-    
+    width :60%;
+    padding: 10px;
+}
+
+#user-friends{
+    width :20%;
+    padding: 10px;
+    border-left : 1px solid lightgrey;
 }

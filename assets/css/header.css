@@ -1,0 +1,26 @@
+header{
+    background-color: rgba(219, 16, 206, 0.714);
+    position: fixed;
+    color: white;
+    height: 3.5vh;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+}
+
+header a{
+    color:white;
+    text-decoration: none;
+}
+
+header #left{
+    margin-left: 0.5vh;
+    font-weight: bold;
+    font-size: 1.9vw;
+}
+
+header #right{
+    margin-right:0.5vw ;
+    font-size:1.4vw
+}
