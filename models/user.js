@@ -30,8 +30,12 @@ let storage = multer.diskStorage({
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
       cb(null, file.fieldname + '-' + uniqueSuffix)
     }
-  })
+  });
 
+//static function
+
+userSchema.statics.uploadedAvatar = multer({ storage: storage }).single('avatar');
+userSchema.statics.avatarPath = AVATAR_PATH;
 
 const User = mongoose.model('User',userSchema);
 
