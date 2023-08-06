@@ -4,16 +4,16 @@
       
       <% if(user.id == profile_user.id) {%>
           <!-- if user matches then show the form-->
-       <form action="/users/update/<%= profile_user.id%>" enctype="multipart/form-data" method="POST">
-        <input type="text" name="name" placeholder="Your name" value="<%= profile_user.name%>" required>
-        <input type="email" name="email" placeholder="Your email" value="<%= profile_user.email%>" required>
+       <form action="/users/update/<%= user.id%>" enctype="multipart/form-data" method="POST">
+        <input type="text" name="name" placeholder="Your name" value="<%= user.name%>" required>
+        <input type="email" name="email" placeholder="Your email" value="<%= user.email%>" required>
         <input type="file" name="avatar" placeholder="Profile Picture">
         <input type="submit" value="Update">
         </form>
         <% }else{ %>
              <!--else show only the profile info-->
-             <p>Name : <%= profile_user.name%></p>
-             <p>Name : <%= profile_user.email%></p>
+             <p>Name :<%= user.name%></p>
+             <p>Name : <%= user.email%></p>
 
         <% } %>
 
