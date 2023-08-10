@@ -1,8 +1,40 @@
 const Comment = require('../models/comment');
 const Post = require('../models/post');
-
+const commentsMailer = require('../mailers/comments_mailer')
 
 // Assuming you have already imported the required modules and models
+
+// module.exports.create = function (req, res) {
+//     Post.findById(req.body.post)
+//         .then(post => {
+//             if (!post) {
+//                 console.log('Post not found');
+//                 return res.redirect('/');
+//             }
+
+//             Comment.create({
+//                 content: req.body.content,
+//                 post: req.body.post,
+//                 user: req.user._id
+//             })
+//                 .then(comment => {
+//                     post.comments.push(comment);
+//                     return post.save();
+//                 })
+//                 .then(() => {
+//                     commentsMailer.newComment(comment);
+//                     res.redirect('/');
+//                 })
+//                 .catch(err => {
+//                     console.log('Error in posting comment:', err);
+//                     res.redirect('/');
+//                 });
+//         })
+//         .catch(err => {
+//             console.log('Error finding post:', err);
+//             res.redirect('/');
+// });
+// };
 
 module.exports.create = function (req, res) {
     Post.findById(req.body.post)
@@ -18,10 +50,16 @@ module.exports.create = function (req, res) {
                 user: req.user._id
             })
                 .then(comment => {
+                    // Capture the created comment
                     post.comments.push(comment);
-                    return post.save();
+
+                    // Save the post with the new comment
+                    return post.save().then(() => comment);
                 })
-                .then(() => {
+                .then(comment => {
+                    // Call the commentsMailer function with the captured comment
+                    commentsMailer.newComment(comment);
+
                     res.redirect('/');
                 })
                 .catch(err => {
@@ -32,8 +70,11 @@ module.exports.create = function (req, res) {
         .catch(err => {
             console.log('Error finding post:', err);
             res.redirect('/');
-        });
+        });
 };
+
+
+
 
 
 module.exports.destroy = async function (req, res) {

@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
-const ejs = reqiure("ejs");
+const ejs = require('ejs');
+const path = require('path');
 
 
 let transporter = nodemailer.createTransport({
@@ -8,8 +9,8 @@ let transporter = nodemailer.createTransport({
     port:587,
     secure:false,
     auth:{
-        user:'alchemy.cn18',
-        pass:'coadingninja'
+        user:'codeial69',
+        pass:'codeia@123'
     }
 })
 
