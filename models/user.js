@@ -17,6 +17,15 @@ const userSchema = new mongoose.Schema({
         require:true
     },avatar:{    
         type:String 
+    },
+    accessToken:
+    {
+        type: String
+    },
+    isTokenValid:
+    {
+        type: Boolean,
+        default: false
     }
 },
 {
