@@ -6,11 +6,11 @@ const path = require('path');
 let transporter = nodemailer.createTransport({
     service:'gmail',
     host: 'smpt.gmail.com',
-    port:587,
+    port:465,
     secure:false,
     auth:{
-        user:'codeial69',
-        pass:'codeia@123'
+        user:'kohli14ashish@gmail.com',
+        pass:'nbjhb'
     }
 })
 
@@ -22,7 +22,7 @@ let renderTemplate = (data,relativePath) => {
         data,
         function(err,template){
             if(err){
-                console.log('error in rendering template');
+                console.log('error in rendering template',err);
                 return;
             }
             maliHTML = template;
