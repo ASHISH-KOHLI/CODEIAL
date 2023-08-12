@@ -1,5 +1,6 @@
 const Post = require("../../../models/post")
 const Comment = require("../../../models/comment")
+
 module.exports.index = async function(req,res){
    
     const posts = await Post.find({})

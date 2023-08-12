@@ -1,136 +1,80 @@
 const Post = require('../models/post')
 const Comment = require('../models/comment')
-
-// module.exports.create = function (req, res) {
-//     Post.create({
-//         content: req.body.content,
-//         user: req.user._id
-//     })
-//     .then((post) => {
-//         return res.redirect('back');
-//     })
-//     .catch((err) => {
-//         console.log('Error in creating a post:', err);
-//         return res.status(500).send('Internal Server Error');
-//     });
-// };
-
-module.exports.create = async function (req, res) {
-    try {
-        const post = await Post.create({
-            content: req.body.content,
-            user: req.user._id
-        });
-        req.flash('success','post published')
-        return res.redirect('back');
-    } catch (err) {
-        req.flash('error',err)
-        return res.redirect('back');
-    }
-};
+const Like = require('../models/like')
 
 
 
-// module.exports.destroy = function(req, res){
-//    Post.findById(req.params.id, function(err, post){
-// //.id means converting the object id into strings
-//     if(post.user == req.user.id){
-//         post.remove();
+module.exports.create = async function(req, res) {
+  try {
+      let post = await Post.create({
+          content: req.body.content,
+          user: req.user._id
+      });
+      
+      if (req.xhr) {
+          // If we want to populate just the name of the user (without sending the password in the API)
+          post = await post.populate('user', 'name')
 
-//         Comment.deleteMany({post: req.params.id},function(err){
-//                return res.redirect('back');
-//         });
-//     }else{
-//         return res.redirect('back');
-//     }
-//    });
-// }
+          return res.status(200).json({
+              data: {
+                  post: post
+              },
+              message: "Post created!"
+          });
+      }
 
+      req.flash('success', 'Post published!');
+      return res.redirect('back');
 
-// module.exports.destroy = function (req, res) {
-//     Post.findById(req.params.id)
-//         .exec()
-//         .then(post => {
-//             if (!post) {
-//                 return res.redirect('back');
-//             }
+  } catch (err) {
+      req.flash('error', err.message);
+      console.error(err);
+      return res.redirect('back');
+  }
+}
 
-//             if (post.user.toString() !== req.user.id) {
-//                 return res.redirect('back');
-//             }
-
-//             return Promise.all([
-//                 post.deleteOne(), // or post.deleteMany() for multiple posts
-//                 Comment.deleteMany({ post: req.params.id }).exec()
-//             ]);
-//         })
-//         .then(() => {
-//             return res.redirect('back');
-//         })
-//         .catch(err => {
-//             console.log('Error deleting post:', err);
-//             return res.redirect('back');
-//         });
-// };
-// module.exports.destroy = async function(req, res)
-// {
-//     try
-//     {
-//         let comment = await Comment.findById(req.params.id);
-//         let post = await Post.findById(comment.post);
-//         if(comment.user == req.user.id ||  post.user == req.user.id)
-//         {
-//             let postId = comment.post;
-//             comment.remove();
-//             let post = Post.findByIdAndUpdate(postId, { $pull: {comments: req.params.id}});
-//             req.flash('success', 'Comment Removed');
-//             return res.redirect('back');
-//         }
-//         else
-//         {
-//             return res.redirect('back');
-//         }
-//     }
-//     catch(err)
-//     {
-//         req.flash('error', err);
-//         return res.redirect('back');
-//     }
-// }
 
 
 module.exports.destroy = async function(req, res) {
   try {
-    let post = await Post.findById(req.params.id);
+      const post = await Post.findById(req.params.id);
 
-    if (!post) {
-      req.flash('error', 'Post not found.');
+      if (!post) {
+          req.flash('error', 'Post not found');
+          return res.redirect('back');
+      }
+
+      if (post.user.toString() !== req.user._id.toString()) {
+          req.flash('error', 'You cannot delete this post!');
+          return res.redirect('back');
+      }
+
+      // Delete associated likes for the post
+      await Like.deleteMany({ likeable: post, onModel: 'Post' });
+
+      // Delete likes associated with the post's comments
+      await Like.deleteMany({ _id: { $in: post.comments } });
+
+      // Delete comments associated with the post
+      await Comment.deleteMany({ post: req.params.id });
+
+      // Remove the post
+      await post.deleteOne();
+
+      if (req.xhr) {
+          return res.status(200).json({
+              data: {
+                  post_id: req.params.id
+              },
+              message: "Post deleted"
+          });
+      }
+
+      req.flash('success', 'Post and associated comments deleted!');
       return res.redirect('back');
-    }
-
-    if (post.user.toString() !== req.user.id) {
-      req.flash('error', 'You cannot delete this post!');
-      return res.redirect('back');
-    }
-
-    await Comment.deleteMany({ post: req.params.id });
-
-    await Post.deleteOne({ _id: req.params.id });
-
-    if (req.xhr) {
-      return res.status(200).json({
-        data: {
-          post_id: req.params.id
-        },
-        message: 'Post deleted'
-      });
-    }
-
-    req.flash('success', 'Post and associated comments deleted!');
-    return res.redirect('back');
   } catch (err) {
-    console.error(err);
-    req.flash('error', 'An error occurred while deleting the post.');
-    return res.redirect('back');
+      req.flash('error', err.message);
+      console.error(err);
+      return res.redirect('back');
   }
 };
