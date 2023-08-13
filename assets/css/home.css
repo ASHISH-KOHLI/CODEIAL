@@ -1,0 +1,32 @@
+.body {
+  display: flex;
+}
+#home-container {
+    display: flex;
+    background-color: rgba(230, 190, 255, 0.9);
+}
+#home-container #user-nav {
+    width: 20%;
+    padding: 10px;
+    border-right: 1px solid rgb(17, 17, 18);
+}
+
+#home-container #feed-posts {
+    width: 60%;
+    padding: 10px;
+    position: relative;
+}
+#home-container #posts-list-container {
+    border: 1px solid rgb(7, 7, 7);
+}
+
+#home-container #user-friends {
+  width: 20%;
+  padding: 10px;
+  
+  border-left: 1px solid rgb(13, 12, 12);
+}
+
+#home-container #posts-list-container ul {
+  list-style: none;
+}

@@ -6,7 +6,7 @@ display: flex;
   left: 0;
   bottom: 0;
   width: 100%;
-  background-color: rgb(154, 0, 249);
+  background-color: rgba(157, 1, 255, 0.9);
   color: white; }
   footer a {
     color: white;
