@@ -5,7 +5,7 @@ module.exports.chatSockets =function(socketServer){
         console.log('new connection received', socket.id);
 
         socket.on('disconnect',function(){
-            console.log('socket disconnected !');
+            console.log('socket disconnected !'); 
         })
     })
 
