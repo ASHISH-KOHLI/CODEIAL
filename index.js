@@ -16,6 +16,11 @@ const MongoStore = require('connect-mongo')( session);
 const flash = require('connect-flash');
 const customMware= require('./config/middleware')
 
+const chatServer =  require('http').Server(app);
+const chatSockets = require('./config/chat_scokets').chatSockets(chatServer);
+chatServer.listen('5000')
+console.log('chat server is listening')
+
 app.use(express.urlencoded());
 
 app.use(cookieParser());
